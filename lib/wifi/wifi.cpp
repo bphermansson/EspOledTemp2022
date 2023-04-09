@@ -3,7 +3,7 @@
 #include "wifi.h"
 #include "../../settings.h"
 
-void wifi_connect(int *ipAddrPtr)
+void wifi_connect(char *ipAddrPtr)
 {   
   WiFi.begin(MYSSID, PASSWORD);
   #ifdef DEBUG
@@ -17,9 +17,9 @@ void wifi_connect(int *ipAddrPtr)
       Serial.print(".");
     #endif
   }
-    #ifdef DEBUG
-      Serial.println();
-      Serial.print("Connected, IP address: ");
-      Serial.println(WiFi.localIP());
-    #endif
+
+  char IP[] = "xxx.xxx.xxx.xxx";          // buffer
+  IPAddress ip = WiFi.localIP();
+  ip.toString().toCharArray(IP, 16);
+  strcpy(ipAddrPtr, IP);
 }
