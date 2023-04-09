@@ -49,27 +49,33 @@ void printoled(char text_to_write_oled[100], int x, int y)
   int line_pos=y;
   strcpy(ostring,"\0");
 
-  token = strtok (text_to_write_oled, " ,.-");    // Split text. 
-  strcat(ostring, token);        // Store current token
-  strcat(ostring, " ");
-    
-  #ifdef DEBUG
-    printf( "First token: %s\n", ostring );
-  #endif
-
   if (strlen(text_to_write_oled) < 16) {
       #ifdef DEBUG
-        printf("A short text,  x=%d y=%d\n", x, y);
+        printf("A short text(%s),  x=%d y=%d\n", text_to_write_oled, x, y);
       #endif
   
-      u8g2.drawStr(x,y,ostring);	// x, y, horizontal x, vertical y.
+      u8g2.drawStr(x,y,text_to_write_oled);	// x, y, horizontal x, vertical y.
       u8g2.sendBuffer();
       strcpy(ostring,"\0");
-      delay(1000);
+      delay(500);
   }
   else {
+    token = strtok (text_to_write_oled, " ,.-");    // Split text. 
+    strcat(ostring, token);        // Store current token
+    strcat(ostring, " ");
+      
+    #ifdef DEBUG
+      printf( "First token: %s\n", ostring );
+      int slen = strlen(text_to_write_oled); 
+      printf("len: %d", slen);
+    #endif
+  
     while( token != NULL ) {
       token = strtok(NULL, " ,.-"); // Get next part
+      #ifdef DEBUG
+        printf("Split\n");
+      #endif
+      
       if(token!= NULL)
       {
         strcat(ostring, token);        // Store current token
@@ -87,20 +93,15 @@ void printoled(char text_to_write_oled[100], int x, int y)
 
             strcpy(ostring,"\0");
             token_counter++;
-            delay(1000);
-        }
-      }    
+            delay(2500);
+        }       
+    //  }    
     }
   }
-
-/*
-  
-  strcpy(whole_text[line_counter], buf);  // Save first item
-  Serial.printf("Start of text: %s", buf);
-  u8g2.drawStr(0,10,"Ok");	// write something to the internal memory
-  u8g2.sendBuffer();
-  delay(3000);
-  */
+  }
+  #ifdef DEBUG
+    Serial.printf("---------------\n");
+  #endif
 }
 
 void clearOled()
