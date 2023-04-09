@@ -1,11 +1,36 @@
+/**
+ * @file htu21d.h
+ * @author Patrik Hermansson (hermansson.patrik@gmail.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-04-09
+ * 
+ * @copyright (c) Paheco 2023
+ * 
+ */
+
 #include <Arduino.h>
+#include <ArduinoJson.h>
+#include <ArduinoOTA.h>
+
 #include "../settings.h"
 #include <print_on_oled.h>
 #include "wifi.h"
+#include "mqtt.h"
+#include "htu21d.h"
 #include "main.h"
 
 WiFiClient wifiClient;
+StaticJsonDocument<132> mqtt_json_temp;
+char *mqtt_json;
+char json_string[300];
 
+int counter;
+int oldcounter = 15000;
+const int interval = 30000;
+htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
+
+//htu_values htuvalues = {0};
 
 void setup() {
   #ifdef DEBUG
@@ -22,6 +47,10 @@ void setup() {
   clearOled();
   printoled(text_to_write_oled, 8, 32); // Position is at texts lower left edge. Display is 128x64.
   delay(800);
+
+  init_htu(htuPtr);
+  
+
   char *ipAddrPtr = ipAddr;
   wifi_connect(ipAddrPtr);
   #ifdef DEBUG
@@ -53,6 +82,28 @@ void setup() {
 }
 
 void loop() {
-  delay(100);
-  yield();
+  
+  mqtt_loop();
+
+  ArduinoOTA.handle();
+
+  delay(10);  // <- fixes some issues with WiFi stability
+
+  counter = millis();
+  if (counter-oldcounter>interval){
+
+    read_htu(htuPtr); 
+    #ifdef DEBUG
+      Serial.println(htuPtr->temp);
+    #endif
+    mqtt_json_temp["sensor"] = APPNAME;
+    serializeJson(mqtt_json_temp, json_string);
+    mqtt_connect(); 
+    mqtt_publish(json_string); 
+    #ifdef DEBUG
+      Serial.println("----------------");
+    #endif
+    // Reset counter
+    oldcounter=counter;
+  }
 }
