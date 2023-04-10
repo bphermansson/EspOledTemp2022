@@ -93,19 +93,21 @@ void loop() {
     int htu_status = htuPtr->state;
     float htu_temp = htuPtr->temp;
     float htu_humidity = htuPtr->humidity;
-    char temp_rounded[5], humidity_rounded[5];
+    
+    char temp_rounded[8], humidity_rounded[5];
+   
     sprintf(temp_rounded, "%.02f", htu_temp); 
     sprintf(humidity_rounded, "%.02f", htu_humidity);
 
     #ifdef DEBUG
       char text[300];
-      sprintf(text, "Sensor status: %d - Temp: %s - Humidity - %s", htu_status, temp_rounded, humidity_rounded);
+      sprintf(text, "Sensor status: %d - Temp: %lf - Humidity - %s", htu_status, temp_rounded, humidity_rounded);
       Serial.println(text);
     #endif
 
     mqtt_json_temp["sensor"] = APPNAME;
     mqtt_json_temp["htu_status"] = htu_status;
-    mqtt_json_temp["htu_temp"] = temp_rounded;
+    mqtt_json_temp["htu_temp"] = htu_temp;
     mqtt_json_temp["htu_humidity"] = humidity_rounded;
  
  
