@@ -25,12 +25,10 @@ StaticJsonDocument<132> mqtt_json_temp;
 char *mqtt_json;
 char json_string[300];
 
-int counter;
-int oldcounter = 15000;
+int counter = 0;
 const int interval = 30000;
+int oldcounter = 0;
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
-
-//htu_values htuvalues = {0};
 
 void setup() {
   #ifdef DEBUG
@@ -50,7 +48,6 @@ void setup() {
 
   init_htu(htuPtr);
   
-
   char *ipAddrPtr = ipAddr;
   wifi_connect(ipAddrPtr);
   #ifdef DEBUG
@@ -60,6 +57,7 @@ void setup() {
   clearOled();
   printoled(text_to_write_oled, 8, 32);
   delay(800);
+
 /*
   strcpy(text_to_write_oled, "TOP LEFT");
   clearOled();
@@ -91,12 +89,26 @@ void loop() {
 
   counter = millis();
   if (counter-oldcounter>interval){
-
     read_htu(htuPtr); 
+    int htu_status = htuPtr->state;
+    float htu_temp = htuPtr->temp;
+    float htu_humidity = htuPtr->humidity;
+    char temp_rounded[5], humidity_rounded[5];
+    sprintf(temp_rounded, "%.02f", htu_temp); 
+    sprintf(humidity_rounded, "%.02f", htu_humidity);
+
     #ifdef DEBUG
-      Serial.println(htuPtr->temp);
+      char text[300];
+      sprintf(text, "Sensor status: %d - Temp: %s - Humidity - %s", htu_status, temp_rounded, humidity_rounded);
+      Serial.println(text);
     #endif
+
     mqtt_json_temp["sensor"] = APPNAME;
+    mqtt_json_temp["htu_status"] = htu_status;
+    mqtt_json_temp["htu_temp"] = temp_rounded;
+    mqtt_json_temp["htu_humidity"] = humidity_rounded;
+ 
+ 
     serializeJson(mqtt_json_temp, json_string);
     mqtt_connect(); 
     mqtt_publish(json_string); 

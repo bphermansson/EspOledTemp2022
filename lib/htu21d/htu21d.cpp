@@ -18,14 +18,9 @@ void init_htu(htuvalues *htval)
 
 void read_htu(htuvalues *htval)
 {
-    if(htval->state != error)
+  if(htval->state != error)
   {
     htval->temp = htu.readTemperature();
     htval->humidity = htu.readHumidity();
-  }
-   
-}
-void update_htu()
-{
-
+  }   
 }
