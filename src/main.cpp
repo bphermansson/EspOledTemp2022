@@ -18,17 +18,19 @@
 #include "wifi.h"
 #include "mqtt.h"
 #include "htu21d.h"
+#include "internetTime.h"
 #include "main.h"
 
 WiFiClient wifiClient;
-StaticJsonDocument<132> mqtt_json_temp;
+StaticJsonDocument<500> mqtt_json_temp;
 char *mqtt_json;
-char json_string[300];
+char json_string[500];
 
-int counter = 0;
-const int interval = 30000;
-int oldcounter = 0;
+unsigned long interval=10000;    // the time we need to wait
+unsigned long previousMillis=0; 
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
+
+mytime_t mytime;
 
 void setup() {
   #ifdef DEBUG
@@ -37,6 +39,8 @@ void setup() {
     Serial.printf("Welcome to %s!\n", APPNAME);
   #endif
   
+  (void)getInternetTime(mytime); 
+
   initOled();
   char text_to_write_oled[100];
   //strcpy(text_to_write_oled, "A long long test text to test with, now it is even longer to make sure it works");
@@ -87,37 +91,56 @@ void loop() {
 
   delay(10);  // <- fixes some issues with WiFi stability
 
-  counter = millis();
-  if (counter-oldcounter>interval){
+ if ((unsigned long)(millis() - previousMillis) >= interval) {
+    previousMillis = millis();
+    Serial.println("Read sensors");
+
     read_htu(htuPtr); 
     int htu_status = htuPtr->state;
     float htu_temp = htuPtr->temp;
     float htu_humidity = htuPtr->humidity;
     
-    char temp_rounded[8], humidity_rounded[5];
+    char temp_rounded[18], humidity_rounded[20];
    
     sprintf(temp_rounded, "%.02f", htu_temp); 
     sprintf(humidity_rounded, "%.02f", htu_humidity);
 
     #ifdef DEBUG
       char text[300];
-      sprintf(text, "Sensor status: %d - Temp: %lf - Humidity - %s", htu_status, temp_rounded, humidity_rounded);
+      sprintf(text, "Sensor status: %d - Temp: %s - Humidity - %s", htu_status, temp_rounded, humidity_rounded);
       Serial.println(text);
     #endif
 
     mqtt_json_temp["sensor"] = APPNAME;
     mqtt_json_temp["htu_status"] = htu_status;
-    mqtt_json_temp["htu_temp"] = htu_temp;
+    mqtt_json_temp["htu_temp"] = temp_rounded;
     mqtt_json_temp["htu_humidity"] = humidity_rounded;
- 
- 
+
+    (void)getInternetTime(mytime); 
+    #ifdef DEBUG
+      Serial.printf("Date/time:%s\n",mytime.readable_date); 
+      Serial.printf("Run time:%ld\n", mytime.cur_timestamp);
+      Serial.printf("Epoch time:%ld\n", mytime.raw_time);
+    #endif
+
+    mqtt_json_temp["readable_time"] = mytime.readable_date;
+    mqtt_json_temp["runtime"] = mytime.cur_timestamp;
+    mqtt_json_temp["epoch"] = mytime.raw_time;
+
     serializeJson(mqtt_json_temp, json_string);
     mqtt_connect(); 
     mqtt_publish(json_string); 
+    
+      Serial.printf("Time:%s\n", mytime.time);
+      Serial.printf("Date:%s\n", mytime.date);
+
+  /*
+  strcpy(text_to_write_oled, mytime.); 
+  clearOled();
+  printoled(text_to_write_oled, 8, 8);
+*/
     #ifdef DEBUG
       Serial.println("----------------");
     #endif
-    // Reset counter
-    oldcounter=counter;
   }
 }

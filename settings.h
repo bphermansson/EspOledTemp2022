@@ -10,3 +10,6 @@
 #define MQTT_PASSWORD "---"
 
 #define APPNAME "EspOledTemp"
+
+#define NTPSERVER "pool.ntp.org"
+#define TZ "CET-1CEST,M3.5.0/02,M10.5.0/03"
