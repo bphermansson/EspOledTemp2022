@@ -22,11 +22,10 @@
 #include "main.h"
 
 WiFiClient wifiClient;
-StaticJsonDocument<500> mqtt_json_temp;
 char *mqtt_json;
 char json_string[500];
 
-unsigned long interval=10000;    // the time we need to wait
+unsigned long interval=300000;    // the time we need to wait
 unsigned long previousMillis=0; 
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
 
@@ -60,7 +59,10 @@ void setup() {
   strcpy(text_to_write_oled, ipAddrPtr); 
   clearOled();
   printoled(text_to_write_oled, 8, 32);
-  delay(800);
+//  delay(800);
+
+(void)getInternetTime(mytime); 
+
 
 /*
   strcpy(text_to_write_oled, "TOP LEFT");
@@ -111,16 +113,19 @@ void loop() {
       Serial.println(text);
     #endif
 
+    StaticJsonDocument<192> mqtt_json_temp; // This should be in loop(), code works better then.
+
     mqtt_json_temp["sensor"] = APPNAME;
     mqtt_json_temp["htu_status"] = htu_status;
     mqtt_json_temp["htu_temp"] = temp_rounded;
     mqtt_json_temp["htu_humidity"] = humidity_rounded;
 
-    (void)getInternetTime(mytime); 
     #ifdef DEBUG
       Serial.printf("Date/time:%s\n",mytime.readable_date); 
       Serial.printf("Run time:%ld\n", mytime.cur_timestamp);
       Serial.printf("Epoch time:%ld\n", mytime.raw_time);
+      Serial.printf("Time:%s\n", mytime.time);
+      Serial.printf("Date:%s\n", mytime.date);
     #endif
 
     mqtt_json_temp["readable_time"] = mytime.readable_date;
@@ -131,8 +136,7 @@ void loop() {
     mqtt_connect(); 
     mqtt_publish(json_string); 
     
-      Serial.printf("Time:%s\n", mytime.time);
-      Serial.printf("Date:%s\n", mytime.date);
+
 
   /*
   strcpy(text_to_write_oled, mytime.); 
