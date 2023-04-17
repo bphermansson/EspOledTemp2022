@@ -19,6 +19,7 @@
 #include "mqtt.h"
 #include "htu21d.h"
 #include "internetTime.h"
+#include "webserver.h"
 #include "main.h"
 
 WiFiClient wifiClient;
@@ -62,6 +63,8 @@ void setup() {
 //  delay(800);
 
 (void)getInternetTime(mytime); 
+
+(void)webserver();
 
 
 /*
