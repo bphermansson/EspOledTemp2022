@@ -12,6 +12,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ArduinoOTA.h>
+#include <ESPAsyncWebServer.h>
 
 #include "../settings.h"
 #include <print_on_oled.h>
@@ -19,11 +20,16 @@
 #include "mqtt.h"
 #include "htu21d.h"
 #include "internetTime.h"
+#include "webserver.h"
 #include "main.h"
 
 WiFiClient wifiClient;
 char *mqtt_json;
-char json_string[500];
+
+wserver newWebserver;
+
+wserver Json_string;
+
 
 unsigned long interval=300000;    // the time we need to wait
 unsigned long previousMillis=0; 
@@ -61,7 +67,9 @@ void setup() {
   printoled(text_to_write_oled, 8, 32);
 //  delay(800);
 
-(void)getInternetTime(mytime); 
+  newWebserver.webserver();
+
+  (void)getInternetTime(mytime); 
 
 
 /*
