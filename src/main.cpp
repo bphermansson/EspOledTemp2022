@@ -12,6 +12,8 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ArduinoOTA.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 #include "../settings.h"
 #include <print_on_oled.h>
@@ -22,15 +24,20 @@
 #include "webserver.h"
 #include "main.h"
 
+#include "ESPAsyncWebServer.h"  // https://github.com/me-no-dev/ESPAsyncWebServer
+#include <ESPAsyncTCP.h>
+AsyncWebServer server(80);
+
 WiFiClient wifiClient;
+
 char *mqtt_json;
-char json_string[500];
 
 unsigned long interval=300000;    // the time we need to wait
 unsigned long previousMillis=0; 
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
 
 mytime_t mytime;
+
 
 void setup() {
   #ifdef DEBUG
@@ -64,7 +71,15 @@ void setup() {
 
 (void)getInternetTime(mytime); 
 
-(void)webserver();
+(void)webserver(server);
+
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Request");
+request->send(200, "text/plain", "Hello World!");
+
+  });
+  
+  server.begin();
 
 
 /*
