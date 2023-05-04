@@ -5,6 +5,10 @@
 // pragma once prevents the file to be included twice
 #pragma once
 
-void webserver();
+extern String jsondata;
+extern char json_string[500];
+
+void notFound(AsyncWebServerRequest *request);
+void webserver(AsyncWebServer server);
 
 #endif

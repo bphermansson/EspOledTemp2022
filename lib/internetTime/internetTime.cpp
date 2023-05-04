@@ -20,7 +20,7 @@ void getInternetTime(mytime_t& mytime)
     int seconds = tm.tm_sec;
     char timedatebuf[50];
     char curTime[20];
-    char curDate[20];
+    char curDate[36];
     sprintf(timedatebuf, "%02d-%02d-%02dT%02d:%02d:%02d", year, month, day, hour, min, seconds); 
     sprintf(curTime, "%02d:%02d:%02d", hour, min, seconds);
     sprintf(curDate, "%02d:%02d:%02d", year, month, day);
