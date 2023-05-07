@@ -13,6 +13,7 @@ void wserver::webserver() {
     LittleFS.begin();
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+      Serial.println("Request");
       request->send(LittleFS, "/index.html", String(), false);
     });
     server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){

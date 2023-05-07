@@ -10,20 +10,20 @@
  */
 
 #include <Arduino.h>
-//#include <ArduinoJson.h>
-//#include <ArduinoOTA.h>
+#include <ArduinoJson.h>
+#include <ArduinoOTA.h>
 #include "ESPAsyncWebServer.h"  // https://github.com/me-no-dev/ESPAsyncWebServer
 
 #include "../settings.h"
 #include <print_on_oled.h>
 #include "wifi.h"
-//#include "mqtt.h"
-//#include "htu21d.h"
-//#include "internetTime.h"
+#include "mqtt.h"
+#include "htu21d.h"
+#include "internetTime.h"
 #include "webserver.h"
 #include "main.h"
 
-//#include <ESPAsyncTCP.h>
+#include <ESPAsyncTCP.h>
 //AsyncWebServer server(80);
 
 WiFiClient wifiClient;
@@ -33,10 +33,9 @@ char *mqtt_json;
 
 unsigned long interval=300000;    // the time we need to wait
 unsigned long previousMillis=0; 
-// htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
+htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
 
-//mytime_t mytime;
-
+mytime_t mytime;
 
 void setup() {
   #ifdef DEBUG
@@ -45,9 +44,8 @@ void setup() {
     Serial.printf("Welcome to %s!\n", APPNAME);
   #endif
   
- // (void)getInternetTime(mytime); 
+  (void)getInternetTime(mytime); 
 
-/*
   initOled();
   char text_to_write_oled[100];
   //strcpy(text_to_write_oled, "A long long test text to test with, now it is even longer to make sure it works");
@@ -58,20 +56,21 @@ void setup() {
   delay(800);
 
   init_htu(htuPtr);
-  */
+
   char *ipAddrPtr = ipAddr;
   wifi_connect(ipAddrPtr);
   #ifdef DEBUG
     Serial.printf("Connected, IP: %s!\n", ipAddrPtr);
   #endif
-  //strcpy(text_to_write_oled, ipAddrPtr); 
-  //clearOled();
-  //printoled(text_to_write_oled, 8, 32);
-//  delay(800);
+  
+  strcpy(text_to_write_oled, ipAddrPtr); 
+  clearOled();
+  printoled(text_to_write_oled, 8, 32);
+  delay(800);
 
-  //(void)getInternetTime(mytime); 
+  (void)getInternetTime(mytime); 
 
-//(void)webserver(server);
+  //(void)webserver(server);
   newWebserver.webserver();
 
 /*
@@ -107,17 +106,16 @@ request->send(200, "text/plain", "Hello World!");
 
 void loop() {
   
-  //mqtt_loop();
+  mqtt_loop();
 
-  //ArduinoOTA.handle();
+  ArduinoOTA.handle();
 
   delay(10);  // <- fixes some issues with WiFi stability
-
- if ((unsigned long)(millis() - previousMillis) >= interval) {
+  if ((unsigned long)(millis() - previousMillis) >= interval) {
     previousMillis = millis();
     Serial.println("Read sensors");
 
-    /*read_htu(htuPtr); 
+    read_htu(htuPtr); 
     int htu_status = htuPtr->state;
     float htu_temp = htuPtr->temp;
     float htu_humidity = htuPtr->humidity;
@@ -156,14 +154,16 @@ void loop() {
     serializeJson(mqtt_json_temp, json_string);
     mqtt_connect(); 
     mqtt_publish(json_string); 
-*/
+
   /*
   strcpy(text_to_write_oled, mytime.); 
   clearOled();
   printoled(text_to_write_oled, 8, 8);
 */
+/*
     #ifdef DEBUG
       Serial.println("----------------");
     #endif
   }
-}
+  */
+}}
