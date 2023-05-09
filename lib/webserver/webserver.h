@@ -3,29 +3,33 @@
 
 #include <Arduino.h>
 #pragma once
+namespace WebServer {
 
-void pageNotFound(AsyncWebServerRequest *request);
+  void setJsonData(String jsonData);
 
-class wserver {
-  public:
-    void webserver();
-};
+  void pageNotFound(AsyncWebServerRequest *request);
 
-#endif
+  class wserver {
+    public:
+      void webserver();
+  };
 
-/*
-#ifndef __WEBSERVER_H
-#define __WEBSERVER_H
+  #endif
 
-#include <Arduino.h>
-// pragma once prevents the file to be included twice
-#pragma once
+  /*
+  #ifndef __WEBSERVER_H
+  #define __WEBSERVER_H
 
-extern String jsondata;
-extern char json_string[500];
+  #include <Arduino.h>
+  // pragma once prevents the file to be included twice
+  #pragma once
 
-void notFound(AsyncWebServerRequest *request);
-void webserver(AsyncWebServer server);
+  extern String jsondata;
+  extern char json_string[500];
 
-#endif
-*/
+  void notFound(AsyncWebServerRequest *request);
+  void webserver(AsyncWebServer server);
+
+  #endif
+  */
+}
