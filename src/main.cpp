@@ -24,10 +24,9 @@
 #include "main.h"
 
 #include <ESPAsyncTCP.h>
-//AsyncWebServer server(80);
 
 WiFiClient wifiClient;
-wserver newWebserver;
+WebServer::wserver newWebserver;
 
 char *mqtt_json;
 
@@ -72,6 +71,10 @@ void setup() {
 
   //(void)webserver(server);
   newWebserver.webserver();
+
+  int test = 0;
+  int *testPtr = &test;
+
 
 /*
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -154,6 +157,8 @@ void loop() {
     serializeJson(mqtt_json_temp, json_string);
     mqtt_connect(); 
     mqtt_publish(json_string); 
+    WebServer::setJsonData("8");
+
 
   /*
   strcpy(text_to_write_oled, mytime.); 
