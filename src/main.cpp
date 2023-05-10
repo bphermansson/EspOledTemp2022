@@ -31,7 +31,8 @@ WebServer::wserver newWebserver;
 char *mqtt_json;
 
 unsigned long interval=300000;    // the time we need to wait
-unsigned long previousMillis=0; 
+unsigned long previousMillis=0;
+bool firstStart = true; 
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
 
 mytime_t mytime;
@@ -108,13 +109,13 @@ request->send(200, "text/plain", "Hello World!");
 }
 
 void loop() {
+  delay(10);  // <- fixes some issues with WiFi stability
   
   mqtt_loop();
 
   ArduinoOTA.handle();
-
-  delay(10);  // <- fixes some issues with WiFi stability
-  if ((unsigned long)(millis() - previousMillis) >= interval) {
+  if ((unsigned long)(millis() - previousMillis) >= interval || firstStart == true) {
+    firstStart = false;
     previousMillis = millis();
     Serial.println("Read sensors");
 
@@ -157,7 +158,7 @@ void loop() {
     serializeJson(mqtt_json_temp, json_string);
     mqtt_connect(); 
     mqtt_publish(json_string); 
-    WebServer::setJsonData("8");
+    WebServer::setJsonData(json_string);
 
 
   /*
@@ -171,4 +172,5 @@ void loop() {
     #endif
   }
   */
-}}
+}
+}

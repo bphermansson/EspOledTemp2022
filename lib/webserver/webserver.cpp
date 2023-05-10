@@ -9,7 +9,7 @@ namespace WebServer {
 
   String _jsonData;
 
-  void setJsonData(String jsonData) {
+  void setJsonData(char jsonData[256]) {
     _jsonData = jsonData;
   }
 

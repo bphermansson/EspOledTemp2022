@@ -5,7 +5,7 @@
 #pragma once
 namespace WebServer {
 
-  void setJsonData(String jsonData);
+  void setJsonData(char jsonData[256]);
 
   void pageNotFound(AsyncWebServerRequest *request);
 
