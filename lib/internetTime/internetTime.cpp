@@ -23,7 +23,7 @@ void getInternetTime(mytime_t& mytime)
     char curDate[36];
     sprintf(timedatebuf, "%02d-%02d-%02dT%02d:%02d:%02d", year, month, day, hour, min, seconds); 
     sprintf(curTime, "%02d:%02d:%02d", hour, min, seconds);
-    sprintf(curDate, "%02d:%02d:%02d", year, month, day);
+    sprintf(curDate, "%02d-%02d-%02d", year, month, day);
 
     strcpy(mytime.readable_date, timedatebuf);
     strcpy(mytime.time, curTime);

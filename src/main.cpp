@@ -138,9 +138,9 @@ void loop() {
     StaticJsonDocument<192> mqtt_json_temp; // This should be in loop(), code works better then.
 
     mqtt_json_temp["sensor"] = APPNAME;
-    mqtt_json_temp["htu_status"] = htu_status;
-    mqtt_json_temp["htu_temp"] = temp_rounded;
-    mqtt_json_temp["htu_humidity"] = humidity_rounded;
+    mqtt_json_temp["status"] = htu_status;
+    mqtt_json_temp["temp"] = temp_rounded;
+    mqtt_json_temp["humidity"] = humidity_rounded;
 
     #ifdef DEBUG
       Serial.printf("Date/time:%s\n",mytime.readable_date); 
@@ -150,7 +150,8 @@ void loop() {
       Serial.printf("Date:%s\n", mytime.date);
     #endif
 
-    mqtt_json_temp["readable_time"] = mytime.readable_date;
+    mqtt_json_temp["time"] = mytime.time;
+    mqtt_json_temp["date"] = mytime.date;
     mqtt_json_temp["runtime"] = mytime.cur_timestamp;
     mqtt_json_temp["epoch"] = mytime.raw_time;
 

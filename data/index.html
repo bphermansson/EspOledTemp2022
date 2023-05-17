@@ -10,13 +10,9 @@
   <div class="container">
     <h1><span id="appname"></span></h1>
   <div id="values">
-    <b><span id="timekey"></span></b>
+    <b><span id="statuskey"></span></b>
       <br />
-      <span id="time"></span>
-  </div>
-  <div id="values">
-      <b><span id="datekey"></span></b><br />
-      <span id="date"></span>
+      <span id="status"></span>
   </div>
   <div id="values">
       <b><span id="tempkey"></span></b><br />
@@ -27,15 +23,23 @@
       <span id="humidity"></span>
   </div>
   <div id="values">
-      <b><span id="uptimekey"></span></b><br />
-      <span id="uptime"></span>
+    <b><span id="datekey"></span></b><br />
+    <span id="date"></span>
+  </div>
+  <div id="values">
+      <b><span id="timekey"></span></b><br />
+      <span id="time"></span>
+  </div>
+  <div id="values">
+    <b><span id="runtimekey"></span></b><br />
+    <span id="runtime"></span>
   </div>
   <div id="data">
     <b>Raw data</b>
 
   </div>
 </div>
-<a href="https://github.com/bphermansson/EspOledTemp">https://github.com/bphermansson/EspOledTemp</a>
+<a href="https://github.com/bphermansson/EspOledTemp2022">https://github.com/bphermansson/EspOledTemp2022</a>
 
 <script>
 setInterval(function() {
@@ -51,14 +55,18 @@ function getData() {
 
       let obj = JSON.parse(this.responseText.toString());
       var keys = Object.keys(obj);
+      var status = "";
+      if(obj.htu_status == 1){
+        status = "Ok";
+      }
+      else {
+        status = "Error";
+      }
 
-      document.getElementById("appname").innerHTML = obj.appname;
+      document.getElementById("appname").innerHTML = obj.sensor;
 
-      document.getElementById("timekey").innerHTML = capitalizeFirstLetter(keys[ 0 ]);
-      document.getElementById("time").innerHTML = obj.sensor;
-
-      document.getElementById("datekey").innerHTML = capitalizeFirstLetter(keys[ 1 ]);
-      document.getElementById("date").innerHTML = obj.htu_status;
+      document.getElementById("statuskey").innerHTML = "Sensor status";
+      document.getElementById("status").innerHTML = status;
 
       document.getElementById("tempkey").innerHTML = capitalizeFirstLetter(keys[ 2 ]);
       document.getElementById("temperature").innerHTML = obj.htu_temp;
@@ -66,8 +74,14 @@ function getData() {
       document.getElementById("humkey").innerHTML = capitalizeFirstLetter(keys[ 3 ]);
       document.getElementById("humidity").innerHTML = obj.htu_humidity;
 
-      document.getElementById("uptimekey").innerHTML = capitalizeFirstLetter(keys[ 4 ]);
-      document.getElementById("uptime").innerHTML = obj.readable_time;
+      document.getElementById("datekey").innerHTML = capitalizeFirstLetter(keys[ 5 ]);
+      document.getElementById("date").innerHTML = obj.date;
+
+      document.getElementById("timekey").innerHTML = capitalizeFirstLetter(keys[ 4 ]);
+      document.getElementById("time").innerHTML = obj.time;
+
+      document.getElementById("runtimekey").innerHTML = capitalizeFirstLetter(keys[ 6 ]);
+      document.getElementById("runtime").innerHTML = obj.runtime;
 
     }
   };
