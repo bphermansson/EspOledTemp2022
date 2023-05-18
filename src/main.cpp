@@ -36,6 +36,8 @@ bool firstStart = true;
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
 
 mytime_t mytime;
+char text_to_write_oled[100];
+
 
 void setup() {
   #ifdef DEBUG
@@ -47,7 +49,6 @@ void setup() {
   (void)getInternetTime(mytime); 
 
   initOled();
-  char text_to_write_oled[100];
   //strcpy(text_to_write_oled, "A long long test text to test with, now it is even longer to make sure it works");
   char temp[] = APPNAME;
   strcpy(text_to_write_oled, temp); 
@@ -73,8 +74,8 @@ void setup() {
   //(void)webserver(server);
   newWebserver.webserver();
 
-  int test = 0;
-  int *testPtr = &test;
+  //int test = 0;
+  //int *testPtr = &test;
 
 
 /*
@@ -125,7 +126,6 @@ void loop() {
     float htu_humidity = htuPtr->humidity;
     
     char temp_rounded[18], humidity_rounded[20];
-   
     sprintf(temp_rounded, "%.02f", htu_temp); 
     sprintf(humidity_rounded, "%.02f", htu_humidity);
 
@@ -161,12 +161,10 @@ void loop() {
     mqtt_publish(json_string); 
     WebServer::setJsonData(json_string);
 
+    strcpy(text_to_write_oled, mytime.time); 
+    clearOled();
+    printoled(text_to_write_oled, 8, 8);
 
-  /*
-  strcpy(text_to_write_oled, mytime.); 
-  clearOled();
-  printoled(text_to_write_oled, 8, 8);
-*/
 /*
     #ifdef DEBUG
       Serial.println("----------------");

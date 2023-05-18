@@ -37,6 +37,7 @@ void printoled(char text_to_write_oled[100], int x, int y)
   #ifdef DEBUG
     Serial.printf("Text to write: %s\n", text_to_write_oled);
   #endif
+  u8g2.setFont(u8g2_font_crox4h_tr);
 
   u8g2.clearBuffer();
 
