@@ -10,7 +10,7 @@ extern char text_to_write_oled[100];
 
 // prototypes don't need named attributes in the .h file
 void initOled();
-void printoled(char *text_to_write_oled, int x, int y);
+void printoled(char *text_to_write_oled, uint8_t font, int x, int y);
 void clearOled();
 
 #endif

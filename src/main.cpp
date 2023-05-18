@@ -29,6 +29,7 @@ WiFiClient wifiClient;
 WebServer::wserver newWebserver;
 
 char *mqtt_json;
+char text_to_write_oled[100];
 
 unsigned long interval=300000;    // the time we need to wait
 unsigned long previousMillis=0;
@@ -47,12 +48,11 @@ void setup() {
   (void)getInternetTime(mytime); 
 
   initOled();
-  char text_to_write_oled[100];
   //strcpy(text_to_write_oled, "A long long test text to test with, now it is even longer to make sure it works");
   char temp[] = APPNAME;
   strcpy(text_to_write_oled, temp); 
   clearOled();
-  printoled(text_to_write_oled, 8, 32); // Position is at texts lower left edge. Display is 128x64.
+ // printoled(text_to_write_oled, 8, 32); // Position is at texts lower left edge. Display is 128x64.
   delay(800);
 
   init_htu(htuPtr);
@@ -65,7 +65,7 @@ void setup() {
   
   strcpy(text_to_write_oled, ipAddrPtr); 
   clearOled();
-  printoled(text_to_write_oled, 8, 32);
+  //printoled(text_to_write_oled, 8, 32);
   delay(800);
 
   (void)getInternetTime(mytime); 
@@ -161,12 +161,11 @@ void loop() {
     mqtt_publish(json_string); 
     WebServer::setJsonData(json_string);
 
+    strcpy(text_to_write_oled, mytime.time); 
+    clearOled();
+    uint8_t font_to_use=1;
+    printoled(text_to_write_oled, font_to_use, 8, 8);
 
-  /*
-  strcpy(text_to_write_oled, mytime.); 
-  clearOled();
-  printoled(text_to_write_oled, 8, 8);
-*/
 /*
     #ifdef DEBUG
       Serial.println("----------------");

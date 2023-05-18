@@ -15,7 +15,6 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
 void initOled()
 {
-  
   Serial.printf("Init Oled.\n");
   u8g2.begin();
   u8g2.setFont(u8g2_font_crox3h_tr);
@@ -27,17 +26,45 @@ void initOled()
 
   u8g2.drawStr(10,10,"Init screen!");	// write something to the internal memory
   u8g2.sendBuffer();
+  delay(1700);
+  u8g2.clearBuffer();
+
+  u8g2.setFont(u8g2_font_crox1hb_tr);
+  u8g2.drawStr(30,30,"Test 2hb");	
+  u8g2.sendBuffer();
+  delay(1700);
+  u8g2.clearBuffer();
+
+  u8g2.setFont(u8g2_font_crox2hb_tr);
+  u8g2.drawStr(30,30,"Test 2hb");	
+  u8g2.sendBuffer();
+  delay(1700);
+  u8g2.clearBuffer();
+
+  u8g2.setFont(u8g2_font_crox4hb_tr);
+  u8g2.drawStr(30,30,"Test 4hb");	
+  u8g2.sendBuffer();
+  delay(1700);
+  u8g2.clearBuffer();
+  
+  u8g2.setFont(u8g2_font_crox5hb_tr);
+  u8g2.drawStr(30,30,"Test 5hb");	
+  u8g2.sendBuffer();
   delay(700);
+
   //u8g2.drawStr(10,10,"01234567890123456789");	// write something to the internal memory
   //u8g2.sendBuffer();
 }
 
-void printoled(char text_to_write_oled[100], int x, int y)
+void printoled(char text_to_write_oled[100], uint8_t font, int x, int y)
 {
   #ifdef DEBUG
-    Serial.printf("Text to write: %s\n", text_to_write_oled);
+    Serial.printf("Text to write: %s\nFont: %d", text_to_write_oled, font);
   #endif
 
+unsigned char yfnt[] = "u8g2.setFont(u8g2_font_crox3h_tf";
+
+  u8g2.setFont(yfnt);
   u8g2.clearBuffer();
 
   delay(1000);
