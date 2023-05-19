@@ -163,8 +163,8 @@ void loop() {
 
     strcpy(text_to_write_oled, mytime.time); 
     clearOled();
-    uint8_t font_to_use=1;
-    printoled(text_to_write_oled, font_to_use, 8, 8);
+    uint8_t font_to_use=3;
+    printoled(text_to_write_oled, font_to_use, 48, 20);
 
 /*
     #ifdef DEBUG
