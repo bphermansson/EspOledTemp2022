@@ -66,13 +66,13 @@ void initOled()
 void printoled(char text_to_write_oled[100], uint8_t font, int x, int y)
 {
   #ifdef DEBUG
-    Serial.printf("Text to write: %s\nFont: %d", text_to_write_oled, font);
+    //Serial.printf("Text to write: %s\nFont: %d\n", text_to_write_oled, font);
   #endif
 
   u8g2.setFont(font_arr[font]);
   u8g2.clearBuffer();
 
-  delay(1000);
+  delay(100);
 
   char *token;
   #define MAX_STRING_SIZE 200
@@ -84,7 +84,7 @@ void printoled(char text_to_write_oled[100], uint8_t font, int x, int y)
 
   if (strlen(text_to_write_oled) < 16) {
       #ifdef DEBUG
-        printf("A short text(%s),  x=%d y=%d\n", text_to_write_oled, x, y);
+        //printf("A short text(%s),  x=%d y=%d\n", text_to_write_oled, x, y);
       #endif
   
       u8g2.drawStr(x,y,text_to_write_oled);	// x, y, horizontal x, vertical y.
@@ -133,7 +133,7 @@ void printoled(char text_to_write_oled[100], uint8_t font, int x, int y)
   }
   }
   #ifdef DEBUG
-    Serial.printf("---------------\n");
+    //Serial.printf("---------------\n");
   #endif
 }
 

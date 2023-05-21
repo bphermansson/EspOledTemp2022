@@ -31,8 +31,14 @@ WebServer::wserver newWebserver;
 char *mqtt_json;
 char text_to_write_oled[100];
 
-unsigned long interval=300000;    // the time we need to wait
-unsigned long previousMillis=0;
+unsigned long sensor_read_interval=300000;    // the time we need to wait
+unsigned long clock_update_interval=1000;
+int time_period = 1000;
+unsigned long time_now = 0;
+int check_int=0;
+
+
+unsigned long previousMillis=0, previousClockMillis=0;
 bool firstStart = true; 
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
 
@@ -73,8 +79,8 @@ void setup() {
   //(void)webserver(server);
   newWebserver.webserver();
 
-  int test = 0;
-  int *testPtr = &test;
+  //int test = 0;
+  //int *testPtr = &test;
 
 
 /*
@@ -114,7 +120,12 @@ void loop() {
   mqtt_loop();
 
   ArduinoOTA.handle();
-  if ((unsigned long)(millis() - previousMillis) >= interval || firstStart == true) {
+  //if ((unsigned long)(millis() - previousMillis) >= sensor_read_interval || firstStart == true) {
+
+  if ((unsigned long)(millis() - previousMillis) >= sensor_read_interval) {
+      previousMillis = millis();
+
+
     firstStart = false;
     previousMillis = millis();
     Serial.println("Read sensors");
@@ -166,6 +177,8 @@ void loop() {
     uint8_t font_to_use=3;
     printoled(text_to_write_oled, font_to_use, 48, 20);
 
+
+
 /*
     #ifdef DEBUG
       Serial.println("----------------");
@@ -173,4 +186,33 @@ void loop() {
   }
   */
 }
+/*
+    if(millis() >= time_now + time_period){
+        time_now += time_period;
+        Serial.println("Hello");
+    }
+*/
+    if ((unsigned long)(millis() - previousClockMillis) >= clock_update_interval) {
+      previousClockMillis = millis();
+
+      check_int++;
+      mytime.seconds++;
+      if(check_int>59) {
+        (void)getInternetTime(mytime); 
+        check_int=0;
+        mytime.seconds=0;
+      }
+      char curTime[20];
+      sprintf(curTime, "%02d:%02d:%02d", mytime.hours, mytime.minutes, mytime.seconds);
+
+      strcpy(text_to_write_oled, curTime); 
+      clearOled();
+      uint8_t font_to_use=3;
+      printoled(text_to_write_oled, font_to_use, 37, 28);
+      #ifdef DEBUG
+        //Serial.print("-----TIME-----");
+        //Serial.println(text_to_write_oled);
+      #endif
+    }
+
 }
