@@ -12,5 +12,5 @@ extern char text_to_write_oled[100];
 void initOled();
 void printoled(char *text_to_write_oled, uint8_t font, int x, int y);
 void clearOled();
-
+void clearClockArea();
 #endif

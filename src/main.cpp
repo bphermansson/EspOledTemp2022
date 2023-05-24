@@ -54,6 +54,9 @@ void setup() {
   (void)getInternetTime(mytime); 
 
   initOled();
+  strcpy(text_to_write_oled, "Boot"); 
+  uint8_t font_to_use=3;
+  printoled(text_to_write_oled, font_to_use, 23, 29);
   //strcpy(text_to_write_oled, "A long long test text to test with, now it is even longer to make sure it works");
   char temp[] = APPNAME;
   strcpy(text_to_write_oled, temp); 
@@ -71,16 +74,13 @@ void setup() {
   
   strcpy(text_to_write_oled, ipAddrPtr); 
   clearOled();
-  //printoled(text_to_write_oled, 8, 32);
   delay(800);
 
   (void)getInternetTime(mytime); 
 
-  //(void)webserver(server);
   newWebserver.webserver();
 
-  //int test = 0;
-  //int *testPtr = &test;
+  clearOled();
 
 
 /*
@@ -120,15 +120,13 @@ void loop() {
   mqtt_loop();
 
   ArduinoOTA.handle();
-  //if ((unsigned long)(millis() - previousMillis) >= sensor_read_interval || firstStart == true) {
 
-  if ((unsigned long)(millis() - previousMillis) >= sensor_read_interval) {
+
+  if ((unsigned long)(millis() - previousMillis) >= sensor_read_interval || firstStart == true) {
       previousMillis = millis();
 
-
     firstStart = false;
-    previousMillis = millis();
-    Serial.println("Read sensors");
+    //Serial.println("Read sensors");
 
     read_htu(htuPtr); 
     int htu_status = htuPtr->state;
@@ -137,8 +135,8 @@ void loop() {
     
     char temp_rounded[18], humidity_rounded[20];
    
-    sprintf(temp_rounded, "%.02f", htu_temp); 
-    sprintf(humidity_rounded, "%.02f", htu_humidity);
+    sprintf(temp_rounded, "%1.1f",htu_temp);
+    sprintf(humidity_rounded, "%1.1f", htu_humidity);
 
     #ifdef DEBUG
       char text[300];
@@ -170,14 +168,18 @@ void loop() {
     serializeJson(mqtt_json_temp, json_string);
     mqtt_connect(); 
     mqtt_publish(json_string); 
+    
     WebServer::setJsonData(json_string);
 
-    strcpy(text_to_write_oled, mytime.time); 
-    clearOled();
-    uint8_t font_to_use=3;
-    printoled(text_to_write_oled, font_to_use, 48, 20);
+    strcpy(text_to_write_oled, temp_rounded);   
+    strcat(text_to_write_oled, "C");   
+    uint8_t font_to_use=2;
+    printoled(text_to_write_oled, font_to_use, 20, 57);
 
-
+    strcpy(text_to_write_oled, humidity_rounded);     
+    strcat(text_to_write_oled, "%");     
+    font_to_use=2;
+    printoled(text_to_write_oled, font_to_use, 70, 57);
 
 /*
     #ifdef DEBUG
@@ -205,10 +207,17 @@ void loop() {
       char curTime[20];
       sprintf(curTime, "%02d:%02d:%02d", mytime.hours, mytime.minutes, mytime.seconds);
 
+      strcpy(text_to_write_oled, mytime.date); 
+      uint8_t font_to_use=0;
+      printoled(text_to_write_oled, font_to_use, 23, 11);
+
       strcpy(text_to_write_oled, curTime); 
-      clearOled();
-      uint8_t font_to_use=3;
-      printoled(text_to_write_oled, font_to_use, 37, 28);
+      font_to_use=1;
+      printoled(text_to_write_oled, font_to_use, 15, 36);
+
+      //clearClockArea();
+
+
       #ifdef DEBUG
         //Serial.print("-----TIME-----");
         //Serial.println(text_to_write_oled);

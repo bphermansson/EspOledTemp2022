@@ -28,6 +28,10 @@ void getInternetTime(mytime_t& mytime)
     strcpy(mytime.readable_date, timedatebuf);
     strcpy(mytime.time, curTime);
     strcpy(mytime.date, curDate);
+
+    mytime.hours = hour;
+    mytime.minutes = min;
+    mytime.seconds = seconds;
     
     mytime.cur_timestamp = millis();
     mytime.raw_time = now;

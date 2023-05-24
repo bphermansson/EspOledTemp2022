@@ -14,7 +14,9 @@
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
 #define FONT_ARRAY_LENGTH 6
-const uint8_t *font_arr[FONT_ARRAY_LENGTH] = {u8g2_font_crox1hb_tr,u8g2_font_crox2hb_tr,u8g2_font_crox3hb_tr,u8g2_font_crox4hb_tr,u8g2_font_crox5hb_tr};
+//const uint8_t *font_arr[FONT_ARRAY_LENGTH] = {u8g2_font_crox1hb_tr,u8g2_font_crox2hb_tr,u8g2_font_crox3hb_tr,u8g2_font_crox4hb_tr,u8g2_font_crox5hb_tr};
+const uint8_t *font_arr[FONT_ARRAY_LENGTH] = {u8g2_font_t0_17b_mn,u8g2_font_inr16_mn,u8g2_font_t0_18b_mf,u8g2_font_crox4hb_tr,u8g2_font_crox5hb_tr};
+// "_tr" is transparent fonts, the previous character is still visible when new ones are written. 
 
 void initOled()
 {
@@ -30,11 +32,11 @@ void initOled()
 /*
   u8g2.drawStr(10,10,"Init screen!");	// write something to the internal memory
   u8g2.sendBuffer();
-  delay(1700);
+  delay(700);
   u8g2.clearBuffer();
 
-  u8g2.setFont(u8g2_font_crox1hb_tr);
-  u8g2.drawStr(30,30,"Test 1hb");	
+  u8g2.setFont(u8g2_font_crox3cb_tf);
+  u8g2.drawStr(30,30,"Test 3hb");	
   u8g2.sendBuffer();
   delay(1700);
   u8g2.clearBuffer();
@@ -55,9 +57,10 @@ void initOled()
   u8g2.drawStr(30,30,"Test 5hb");	
   u8g2.sendBuffer();
   delay(700);
-
-  u8g2.setFont(font_arr[2]);
 */
+  u8g2.setFont(font_arr[2]);
+  u8g2.clearBuffer();
+
 
   //u8g2.drawStr(10,10,"01234567890123456789");	// write something to the internal memory
   //u8g2.sendBuffer();
@@ -70,7 +73,7 @@ void printoled(char text_to_write_oled[100], uint8_t font, int x, int y)
   #endif
 
   u8g2.setFont(font_arr[font]);
-  u8g2.clearBuffer();
+  //u8g2.clearBuffer();
 
   delay(100);
 
@@ -86,7 +89,7 @@ void printoled(char text_to_write_oled[100], uint8_t font, int x, int y)
       #ifdef DEBUG
         //printf("A short text(%s),  x=%d y=%d\n", text_to_write_oled, x, y);
       #endif
-  
+
       u8g2.drawStr(x,y,text_to_write_oled);	// x, y, horizontal x, vertical y.
       u8g2.sendBuffer();
       strcpy(ostring,"\0");
@@ -136,8 +139,12 @@ void printoled(char text_to_write_oled[100], uint8_t font, int x, int y)
     //Serial.printf("---------------\n");
   #endif
 }
-
+void clearClockArea() {
+  //u8g2.setDrawColor(0);
+  u8g2.drawFrame(0,0,128,40);
+  delay(2000);
+}
 void clearOled()
 {
-  //u8g2.clearBuffer();
+  u8g2.clearBuffer();
 }
