@@ -37,7 +37,6 @@ int time_period = 1000;
 unsigned long time_now = 0;
 int check_int=0;
 
-
 unsigned long previousMillis=0, previousClockMillis=0;
 bool firstStart = true; 
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
@@ -49,6 +48,7 @@ void setup() {
     Serial.begin(115200);
     delay(1000);
     Serial.printf("Welcome to %s!\n", APPNAME);
+    pinMode(D3, INPUT_PULLUP); 
   #endif
   
   (void)getInternetTime(mytime); 
