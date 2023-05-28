@@ -41,9 +41,12 @@ void mqtt_connect() {
   }
 }
 
-void mqtt_publish(char *mess) {
+void mqtt_publish(char *topic, char *mess) {
   #ifdef DEBUG
+    
     Serial.println("Publish");
+    Serial.println(topic);
+    Serial.println(mess);
   #endif
   mqttClient.publish(MQTT_PUB_TOPIC,mess);
   mqttClient.disconnect(); // Disconnect makes sure the message is published before going to sleep.

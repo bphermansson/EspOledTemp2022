@@ -21,6 +21,7 @@
 #include "htu21d.h"
 #include "internetTime.h"
 #include "webserver.h"
+#include <Bounce2.h>
 #include "main.h"
 
 #include <ESPAsyncTCP.h>
@@ -37,12 +38,13 @@ int time_period = 1000;
 unsigned long time_now = 0;
 int check_int=0;
 
-
 unsigned long previousMillis=0, previousClockMillis=0;
 bool firstStart = true; 
 htuvalues *htuPtr = (htuvalues*)malloc(sizeof(htuvalues));
 
 mytime_t mytime;
+
+int temp = 0;
 
 void setup() {
   #ifdef DEBUG
@@ -50,7 +52,9 @@ void setup() {
     delay(1000);
     Serial.printf("Welcome to %s!\n", APPNAME);
   #endif
-  
+
+  pinMode(BUTTON_PIN, INPUT_PULLUP);   
+
   (void)getInternetTime(mytime); 
 
   initOled();
@@ -121,12 +125,31 @@ void loop() {
 
   ArduinoOTA.handle();
 
+  StaticJsonDocument<192> mqtt_json_temp; // This should be in loop(), code works better then.
+  char json_topic[20] = MQTT_PUB_BTN_TOPIC;
+  char json_string[256];
 
+  temp = digitalRead(BUTTON_PIN);
+  if (temp == LOW) {
+    #ifdef DEBUG
+      Serial.println("Button pressed");
+    #endif
+
+    mqtt_json_temp["btn"] = "pressed";
+    serializeJson(mqtt_json_temp, json_string);
+    mqtt_connect(); 
+    mqtt_publish(json_topic, json_string); 
+    
+  }
+  
   if ((unsigned long)(millis() - previousMillis) >= sensor_read_interval || firstStart == true) {
       previousMillis = millis();
 
     firstStart = false;
-    //Serial.println("Read sensors");
+    
+    #ifdef DEBUG
+      Serial.println("Read sensors");
+    #endif
 
     read_htu(htuPtr); 
     int htu_status = htuPtr->state;
@@ -143,8 +166,6 @@ void loop() {
       sprintf(text, "Sensor status: %d - Temp: %s - Humidity - %s", htu_status, temp_rounded, humidity_rounded);
       Serial.println(text);
     #endif
-
-    StaticJsonDocument<192> mqtt_json_temp; // This should be in loop(), code works better then.
 
     mqtt_json_temp["sensor"] = APPNAME;
     mqtt_json_temp["status"] = htu_status;
@@ -164,10 +185,11 @@ void loop() {
     mqtt_json_temp["runtime"] = mytime.cur_timestamp;
     mqtt_json_temp["epoch"] = mytime.raw_time;
 
-    char json_string[256];
+    //char json_string[256];
+    strcpy(json_topic, MQTT_PUB_TOPIC);
     serializeJson(mqtt_json_temp, json_string);
     mqtt_connect(); 
-    mqtt_publish(json_string); 
+    mqtt_publish(json_topic, json_string); 
     
     WebServer::setJsonData(json_string);
 
