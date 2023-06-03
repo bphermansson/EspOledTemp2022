@@ -86,36 +86,6 @@ void setup() {
 
   clearOled();
 
-
-/*
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("Request");
-request->send(200, "text/plain", "Hello World!");
-
-  });
-  
-  server.begin();
-*/
-
-/*
-  strcpy(text_to_write_oled, "TOP LEFT");
-  clearOled();
-  printoled(text_to_write_oled, 2, 10);
-  delay(300);
-
-  strcpy(text_to_write_oled, "RAD2");
-  clearOled();
-  printoled(text_to_write_oled, 12, 13);
-  delay(300);
-
-  strcpy(text_to_write_oled, "Lower Right");
-  clearOled();
-  int x = strlen(text_to_write_oled) * 8;
-  x = 128-x;
-
-  printoled(text_to_write_oled, x, 64);
-  delay(300);
-*/
 }
 
 void loop() {
@@ -135,10 +105,13 @@ void loop() {
       Serial.println("Button pressed");
     #endif
 
-    mqtt_json_temp["btn"] = "pressed";
-    serializeJson(mqtt_json_temp, json_string);
-    mqtt_connect(); 
-    mqtt_publish(json_topic, json_string); 
+  strcpy(text_to_write_oled, "PUSH"); 
+  printoled(text_to_write_oled, 2, 15, 36);
+
+  mqtt_json_temp["btn"] = "pressed";
+  serializeJson(mqtt_json_temp, json_string);
+  mqtt_connect(); 
+  mqtt_publish(json_topic, json_string); 
     
   }
   
@@ -202,20 +175,8 @@ void loop() {
     strcat(text_to_write_oled, "%");     
     font_to_use=2;
     printoled(text_to_write_oled, font_to_use, 70, 57);
-
-/*
-    #ifdef DEBUG
-      Serial.println("----------------");
-    #endif
-  }
-  */
 }
-/*
-    if(millis() >= time_now + time_period){
-        time_now += time_period;
-        Serial.println("Hello");
-    }
-*/
+
     if ((unsigned long)(millis() - previousClockMillis) >= clock_update_interval) {
       previousClockMillis = millis();
 
@@ -236,9 +197,6 @@ void loop() {
       strcpy(text_to_write_oled, curTime); 
       font_to_use=1;
       printoled(text_to_write_oled, font_to_use, 15, 36);
-
-      //clearClockArea();
-
 
       #ifdef DEBUG
         //Serial.print("-----TIME-----");
