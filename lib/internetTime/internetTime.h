@@ -9,6 +9,9 @@
         char readable_date[30];
         char date[15];
         char time[15];
+        int hours;
+        int minutes;
+        int seconds;
         unsigned long cur_timestamp;
         unsigned long raw_time;
     } mytime_t;

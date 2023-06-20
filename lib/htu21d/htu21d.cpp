@@ -1,8 +1,11 @@
 
 #include <Arduino.h>
-#include "Adafruit_HTU21DF.h"
+//#include "Adafruit_HTU21DF.h"
 #include "htu21d.h"
-Adafruit_HTU21DF htu = Adafruit_HTU21DF();
+//Adafruit_HTU21DF htu = Adafruit_HTU21DF();
+#include <HTU21D.h>
+HTU21D            htu(HTU21D_RES_RH12_TEMP14);
+
 
 void init_htu(htuvalues *htval)
 {

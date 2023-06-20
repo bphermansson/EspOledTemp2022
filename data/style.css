@@ -8,16 +8,9 @@ h1{
   color: #0F3376;
   padding: 2vh;
 }
-/*
-p{
-  font-size: 1.5rem;
-}
-p.headline{
-  font-size: 2rem;
-}
-*/
+
 .container {
-  width: 70%;
+  width: 80%;
   background: #dddeea;
   margin: 10px auto;
   position: relative;
@@ -30,7 +23,8 @@ p.headline{
   box-shadow: 5px 5px 15px 5px #631504;
   background: #6086dc;
   padding: 5px;
-  width: 120px;
+
+  width: 150px;
   margin: 26px;
   font-size: 1.4vw;
   display:inline-block;
@@ -39,6 +33,8 @@ p.headline{
   box-shadow: 5px 5px 15px 5px #631504;
   padding: 5px;
 
+  width: 80%;
+  overflow-wrap: break-word;
   margin: 26px;
   font-size: 1.4vw;
   display:inline-block;
