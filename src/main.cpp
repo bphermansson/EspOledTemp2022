@@ -30,6 +30,7 @@ WiFiClient wifiClient;
 WebServer::wserver newWebserver;
 
 char *mqtt_json;
+int mqtt_status;
 char text_to_write_oled[100];
 
 unsigned long sensor_read_interval=300000;    // the time we need to wait
@@ -65,8 +66,8 @@ void setup() {
   char temp[] = APPNAME;
   strcpy(text_to_write_oled, temp); 
   clearOled();
- // printoled(text_to_write_oled, 8, 32); // Position is at texts lower left edge. Display is 128x64.
-  delay(800);
+  printoled(text_to_write_oled, font_to_use, 8, 32); // Position is at texts lower left edge. Display is 128x64.
+  delay(500);
 
   init_htu(htuPtr);
 
@@ -104,15 +105,29 @@ void loop() {
     #ifdef DEBUG
       Serial.println("Button pressed");
     #endif
-
-  strcpy(text_to_write_oled, "PUSH"); 
-  printoled(text_to_write_oled, 2, 15, 36);
-
-  mqtt_json_temp["btn"] = "pressed";
-  serializeJson(mqtt_json_temp, json_string);
-  mqtt_connect(); 
-  mqtt_publish(json_topic, json_string); 
-    
+    strcpy(text_to_write_oled, "PUSH"); 
+    printoled(text_to_write_oled, 2, 15, 36);
+    mqtt_json_temp["btn"] = "pressed";
+    serializeJson(mqtt_json_temp, json_string);
+    int sts = mqtt_connect(); 
+    #ifdef DEBUG
+      Serial.print("Mqtt connection status, 0 is connected:");
+      Serial.println(sts);
+    #endif  
+    if(sts == 1) {
+      clearOled();
+      strcpy(text_to_write_oled, "Mqtt disconnected!");   
+      uint8_t font_to_use=3;
+      printoled(text_to_write_oled, font_to_use, 15, 87);
+      #ifdef DEBUG
+        Serial.println("Mqtt disconnected!");
+      #endif
+      delay(2000);
+      clearOled();
+    }
+    else {
+      mqtt_publish(json_topic, json_string);   
+    }    
   }
   
   if ((unsigned long)(millis() - previousMillis) >= sensor_read_interval || firstStart == true) {
@@ -161,8 +176,25 @@ void loop() {
     //char json_string[256];
     strcpy(json_topic, MQTT_PUB_TOPIC);
     serializeJson(mqtt_json_temp, json_string);
-    mqtt_connect(); 
-    mqtt_publish(json_topic, json_string); 
+    int sts = mqtt_connect(); 
+    #ifdef DEBUG
+      Serial.print("Mqtt connection status, 0 is connected:");
+      Serial.println(sts);
+    #endif  
+    if(sts == 1) {
+      clearOled();
+      strcpy(text_to_write_oled, "Mqtt disconnected!");   
+      uint8_t font_to_use=3;
+      printoled(text_to_write_oled, font_to_use, 15, 87);
+      #ifdef DEBUG
+        Serial.println("Mqtt disconnected!");
+      #endif
+      delay(2000);
+      clearOled();
+    }
+    else {
+      mqtt_publish(json_topic, json_string);   
+    }    
     
     WebServer::setJsonData(json_string);
 

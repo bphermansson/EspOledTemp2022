@@ -7,10 +7,12 @@
 extern  WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
-void mqtt_connect() {
+int mqtt_connect() {
   #ifdef DEBUG
     Serial.println("Connecting to MQTT");
   #endif
+
+  int tries = 0;
 
   if (!mqttClient.connected()) {
     mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
@@ -25,8 +27,14 @@ void mqtt_connect() {
           Serial.println("connected");
         #endif
       } else {
+        tries++;
+        if(tries>=5) {
+          return 1;
+        }
+        
         #ifdef DEBUG
-          Serial.print("failed, rc=");
+          Serial.print(tries);
+          Serial.print(" failed, rc=");
           Serial.print(mqttClient.state());
           Serial.println(" will try again in 5 seconds");
         #endif
@@ -39,11 +47,12 @@ void mqtt_connect() {
         Serial.println("Already connected");
       #endif
   }
+  return 0;
 }
+
 
 void mqtt_publish(char *topic, char *mess) {
   #ifdef DEBUG
-    
     Serial.println("Publish");
     Serial.println(topic);
     Serial.println(mess);
