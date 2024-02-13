@@ -16,6 +16,7 @@
 
 #include "../settings.h"
 #include <print_on_oled.h>
+#include <htu21dFunc.h>
 #include "wifi.h"
 #include "mqtt.h"
 #include "htu21d.h"
